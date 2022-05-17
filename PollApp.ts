@@ -14,12 +14,13 @@ import {
     UIKitBlockInteractionContext,
     UIKitViewSubmitInteractionContext,
 } from '@rocket.chat/apps-engine/definition/uikit';
-
+import { ApiSecurity, ApiVisibility } from '@rocket.chat/apps-engine/definition/api';
 import { createPollMessage } from './src/lib/createPollMessage';
 import { createPollModal } from './src/lib/createPollModal';
 import { finishPollMessage } from './src/lib/finishPollMessage';
 import { votePoll } from './src/lib/votePoll';
 import { PollCommand } from './src/PollCommand';
+import { GeneratePoll, FinishPoll } from './src/IPoll';
 
 export class PollApp extends App implements IUIKitInteractionHandler {
 
@@ -29,7 +30,6 @@ export class PollApp extends App implements IUIKitInteractionHandler {
 
     public async executeViewSubmitHandler(context: UIKitViewSubmitInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
         const data = context.getInteractionData();
-
         const { state }: {
             state: {
                 poll: {
@@ -53,6 +53,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
         }
 
         try {
+
             await createPollMessage(data, read, modify, persistence, data.user.id);
         } catch (err) {
             return context.getInteractionResponder().viewErrorResponse({
@@ -97,21 +98,21 @@ export class PollApp extends App implements IUIKitInteractionHandler {
 
                     const { room } = context.getInteractionData();
                     const errorMessage = modify
-                         .getCreator()
-                         .startMessage()
-                         .setSender(context.getInteractionData().user)
-                         .setText(e.message)
-                         .setUsernameAlias('Poll');
+                        .getCreator()
+                        .startMessage()
+                        .setSender(context.getInteractionData().user)
+                        .setText(e.message)
+                        .setUsernameAlias('Poll');
 
                     if (room) {
-                            errorMessage.setRoom(room);
+                        errorMessage.setRoom(room);
                     }
                     modify
-                         .getNotifier()
-                         .notifyUser(
-                             context.getInteractionData().user,
-                             errorMessage.getMessage(),
-                         );
+                        .getNotifier()
+                        .notifyUser(
+                            context.getInteractionData().user,
+                            errorMessage.getMessage(),
+                        );
                 }
             }
         }
@@ -125,13 +126,18 @@ export class PollApp extends App implements IUIKitInteractionHandler {
     public async initialize(configuration: IConfigurationExtend): Promise<void> {
         await configuration.slashCommands.provideSlashCommand(new PollCommand());
         await configuration.settings.provideSetting({
-            id : 'use-user-name',
+            id: 'use-user-name',
             i18nLabel: 'Use name attribute to display voters, instead of username',
             i18nDescription: 'When checked, display voters as full user names instead of username',
             required: false,
             type: SettingType.BOOLEAN,
             public: true,
             packageValue: false,
+        });
+        await configuration.api.provideApi({
+            visibility: ApiVisibility.PUBLIC,
+            security: ApiSecurity.UNSECURE,
+            endpoints: [new GeneratePoll(this), new FinishPoll(this)],
         });
     }
 }

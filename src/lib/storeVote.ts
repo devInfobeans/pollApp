@@ -7,6 +7,7 @@ import { IPoll } from '../IPoll';
 export async function storeVote(poll: IPoll, voteIndex: number, { id, username, name }: IUser, { persis }: { persis: IPersistence }) {
     const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, poll.msgId);
 
+
     const voter = { id, username, name };
 
     const findVoter = ({ id: voterId }) => voterId === id;

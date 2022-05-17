@@ -1,24 +1,13 @@
 import { IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
 import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
-import {
-    IUIKitViewSubmitIncomingInteraction,
-} from '@rocket.chat/apps-engine/definition/uikit/UIKitIncomingInteractionTypes';
+
 
 import { IPoll } from '../IPoll';
 import { createPollBlocks } from './createPollBlocks';
 
-export async function createPollMessage(data: IUIKitViewSubmitIncomingInteraction, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
-    const { view: { id } } = data;
-    const identifier = 'internal';
-    const { state }: {
-        state?: any;
-    } = data.view;
-
-    const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, id);
-    const [record] = await read.getPersistenceReader().readByAssociation(association) as Array<{
-        room: IRoom;
-    }>;
+export async function createPollMessage2(data: any, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
+    const { id, state, record, user, identifier } = data;
 
     if (!state.poll || !state.poll.question || state.poll.question.trim() === '') {
         throw { question: 'Please type your question here' };
@@ -55,9 +44,9 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
 
         const poll: IPoll = {
             question: state.poll.question,
-            identifier: '',
             uid,
             msgId: '',
+            identifier: '',
             options,
             totalVotes: 0,
             votes: options.map(() => ({ quantity: 0, voters: [] })),
@@ -72,11 +61,11 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
 
         const messageId = await modify.getCreator().finish(builder);
         poll.msgId = messageId;
+        poll.identifier = identifier;
 
-        const pollAssociation = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, messageId,);
+        const pollAssociation = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, messageId);
 
-        await persistence.createWithAssociation(poll, pollAssociation);
-
+        const pollData = await persistence.createWithAssociation(poll, pollAssociation);
     } catch (e) {
         throw e;
     }
