@@ -41,8 +41,8 @@ export class GeneratePoll extends ApiEndpoint {
                         id: room,
                     }
                 };
-                const userId = 'r5w7vSqwoPAt66NwH';
-                const data = { id, state, record, user: { userId, username: 'devanshu.tiwari', }, identifier }
+                const userId = 'mgn2DjDaSeZkFKRhv';
+                const data = { id, state, record, user: { userId, username: 'ibrahim', }, identifier }
 
                 createPollMessage2(data, read, modify, persis, data.user.userId)
             })
@@ -74,7 +74,7 @@ export class FinishPoll extends ApiEndpoint {
         pollMessageIdArray.forEach(async poll => {
             const data = {
                 message: { id: poll },
-                user: { id: 'zvXB9nTtB9LQK4R3z' }
+                user: { id: 'mgn2DjDaSeZkFKRhv' }
             }
 
             await finishPollMessage({ data, read, persistence, modify });
