@@ -27,13 +27,14 @@ export class GeneratePoll extends ApiEndpoint {
         try {
 
 
-            const { question, option0, option1, identifier } = request.content;
+            const { question, option0, option1, identifier, rooms } = request.content;
             var id = uuid.v4();
             const state = {
                 config: { mode: 'multiple', visibility: 'open' },
                 poll: { question: question, 'option-0': option0, 'option-1': option1 }
             }
-            let roomIdArray = ['xZWFFCeBSckbZZmH5', 'dCZdNSXuwvPALw9EC']
+            let roomIdArray = rooms;
+            console.log("generating poll for rooms", rooms);
             roomIdArray.forEach(room => {
                 const record = {
                     room: {
