@@ -94,15 +94,16 @@ export class CastVote extends ApiEndpoint {
         http: IHttp, persistence: IPersistence): Promise<any> {
 
         try {
+            const { value, messageId, userId, username } = request.content;
             const data = {
                 "appId": "c33fa1a6-68a7-491e-bf49-9d7b99671c48",
                 "actionId": "vote",
                 "user": {
-                    "id": "9Z8fWtivqerzJTrcs",
-                    "username": "nilesh"
+                    "id": userId,
+                    "username": username
                 },
-                "value": 0,
-                "message": { "id": "oK2hnBJqN3oyCpB5P" }
+                "value": value,
+                "message": { "id": messageId }
             }
             await votePoll({ data, read, persistence, modify });
             return this.success({ message: "Vote casted successfully" })
