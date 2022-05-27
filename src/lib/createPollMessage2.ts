@@ -7,7 +7,7 @@ import { IPoll } from '../IPoll';
 import { createPollBlocks } from './createPollBlocks';
 
 export async function createPollMessage2(data: any, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
-    const { id, state, record, user, identifier } = data;
+    const { id, state, record, user, room, identifier } = data;
 
     if (!state.poll || !state.poll.question || state.poll.question.trim() === '') {
         throw { question: 'Please type your question here' };
@@ -47,6 +47,7 @@ export async function createPollMessage2(data: any, read: IRead, modify: IModify
             uid,
             msgId: '',
             identifier: '',
+            roomId: '',
             options,
             totalVotes: 0,
             votes: options.map(() => ({ quantity: 0, voters: [] })),
@@ -62,7 +63,8 @@ export async function createPollMessage2(data: any, read: IRead, modify: IModify
         const messageId = await modify.getCreator().finish(builder);
         poll.msgId = messageId;
         poll.identifier = identifier;
-
+        poll.roomId = room;
+        console.log("new poll data", poll)
         const pollAssociation = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, messageId);
 
         const pollData = await persistence.createWithAssociation(poll, pollAssociation);

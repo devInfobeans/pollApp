@@ -5,6 +5,7 @@ import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket
 import { finishPollMessage } from './lib/finishPollMessage';
 // import { ISlashCommand, SlashCommandContext } from '@rocket.chat/apps-engine/definition/slashcommands';
 import { createPollMessage2 } from '../src/lib/createPollMessage2';
+import { votePoll } from './lib/votePoll';
 // import { PollCommandContext } from './PollCommandContext';
 var uuid = require("uuid");
 
@@ -41,8 +42,8 @@ export class GeneratePoll extends ApiEndpoint {
                         id: room,
                     }
                 };
-                const userId = 'mgn2DjDaSeZkFKRhv';
-                const data = { id, state, record, user: { userId, username: 'ibrahim', }, identifier }
+                const userId = 'YxPwijjwM9AH4XMfB';
+                const data = { id, state, record, user: { userId, username: 'Poll.bot', }, room, identifier }
 
                 createPollMessage2(data, read, modify, persis, data.user.userId)
             })
@@ -74,7 +75,7 @@ export class FinishPoll extends ApiEndpoint {
         pollMessageIdArray.forEach(async poll => {
             const data = {
                 message: { id: poll },
-                user: { id: 'mgn2DjDaSeZkFKRhv' }
+                user: { id: 'r5w7vSqwoPAt66NwH' }
             }
 
             await finishPollMessage({ data, read, persistence, modify });
@@ -85,11 +86,39 @@ export class FinishPoll extends ApiEndpoint {
     }
 }
 
+export class CastVote extends ApiEndpoint {
+    public path = 'api/castVote';
+    public example = [];
+
+    public async post(request: IApiRequest, endpoint: IApiEndpointInfo, read: IRead, modify: IModify,
+        http: IHttp, persistence: IPersistence): Promise<any> {
+
+        try {
+            const data = {
+                "appId": "c33fa1a6-68a7-491e-bf49-9d7b99671c48",
+                "actionId": "vote",
+                "user": {
+                    "id": "9Z8fWtivqerzJTrcs",
+                    "username": "nilesh"
+                },
+                "value": 0,
+                "message": { "id": "oK2hnBJqN3oyCpB5P" }
+            }
+            await votePoll({ data, read, persistence, modify });
+            return this.success({ message: "Vote casted successfully" })
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+}
+
 export interface IPoll {
     msgId: string;
     identifier: string;
     uid: string; // user who created the poll
     question: string;
+    roomId: string;
     options: Array<string>;
     totalVotes: number;
     votes: Array<IVoter>;

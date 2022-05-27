@@ -11,6 +11,7 @@ import { createPollBlocks } from './createPollBlocks';
 export async function createPollMessage(data: IUIKitViewSubmitIncomingInteraction, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
     const { view: { id } } = data;
     const identifier = 'internal';
+    const roomId = 'NA'
     const { state }: {
         state?: any;
     } = data.view;
@@ -56,6 +57,7 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
         const poll: IPoll = {
             question: state.poll.question,
             identifier: '',
+            roomId: '',
             uid,
             msgId: '',
             options,

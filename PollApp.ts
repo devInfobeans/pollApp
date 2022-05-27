@@ -20,7 +20,7 @@ import { createPollModal } from './src/lib/createPollModal';
 import { finishPollMessage } from './src/lib/finishPollMessage';
 import { votePoll } from './src/lib/votePoll';
 import { PollCommand } from './src/PollCommand';
-import { GeneratePoll, FinishPoll } from './src/IPoll';
+import { GeneratePoll, FinishPoll, CastVote } from './src/IPoll';
 
 export class PollApp extends App implements IUIKitInteractionHandler {
 
@@ -137,7 +137,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
         await configuration.api.provideApi({
             visibility: ApiVisibility.PUBLIC,
             security: ApiSecurity.UNSECURE,
-            endpoints: [new GeneratePoll(this), new FinishPoll(this)],
+            endpoints: [new GeneratePoll(this), new FinishPoll(this), new CastVote(this)],
         });
     }
 }
