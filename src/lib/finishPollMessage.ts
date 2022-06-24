@@ -51,7 +51,7 @@ export async function finishPollMessage({ data, read, persistence, modify }: {
 
         createPollBlocks(block, poll.question, poll.options, poll, showNames.value);
         message.setBlocks(block);
-
+        message.addCustomField("data", poll)
         return modify.getUpdater().finish(message);
     } catch (e) {
         console.error('Error', e);

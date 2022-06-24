@@ -43,6 +43,7 @@ export class GeneratePoll extends ApiEndpoint {
                     }
                 };
                 const userId = 'tJXxzcN4BTadyWgBz';
+                // const userId = 'xM3EoREdLQpThcsc9';
                 const data = { id, state, record, user: { userId, username: 'chatbot', }, room, identifier }
 
                 createPollMessage2(data, read, modify, persis, data.user.userId)
@@ -76,6 +77,7 @@ export class FinishPoll extends ApiEndpoint {
             const data = {
                 message: { id: poll },
                 user: { id: 'mgn2DjDaSeZkFKRhv' }
+                // user: { id: 'r5w7vSqwoPAt66NwH' }
             }
 
             await finishPollMessage({ data, read, persistence, modify });

@@ -29,7 +29,7 @@ export async function votePoll({ data, read, persistence, modify }: {
 
     const message = await modify.getUpdater().message(data.message.id as string, data.user);
     message.setEditor(message.getSender());
-
+    message.addCustomField("data", poll)
     const block = modify.getCreator().getBlockBuilder();
 
     const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');

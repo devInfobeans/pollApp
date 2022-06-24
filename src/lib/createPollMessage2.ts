@@ -64,9 +64,11 @@ export async function createPollMessage2(data: any, read: IRead, modify: IModify
         poll.msgId = messageId;
         poll.identifier = identifier;
         poll.roomId = room;
-        console.log("new poll data", poll)
         const pollAssociation = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, messageId);
-
+        const message = await modify.getUpdater().message(messageId as string, user);
+        message.setEditor(message.getSender());
+        message.addCustomField("data", poll)
+        modify.getUpdater().finish(message)
         const pollData = await persistence.createWithAssociation(poll, pollAssociation);
     } catch (e) {
         throw e;
