@@ -3,10 +3,10 @@ import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 
 
-import { IPoll } from '../IPoll';
+import { IQuiz } from '../IPoll';
 import { createPollBlocks } from './createPollBlocks';
 
-export async function createPollMessage2(data: any, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
+export async function createQuizMessage(data: any, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
     const { id, state, record, user, room, identifier, title, deadline, correctAnswer } = data;
 
     if (!state.poll || !state.poll.question || state.poll.question.trim() === '') {
@@ -44,7 +44,7 @@ export async function createPollMessage2(data: any, read: IRead, modify: IModify
             .setRoom(record.room)
             .setText(state.poll.question);
 
-        const poll: IPoll = {
+        const poll: IQuiz = {
             question: state.poll.question,
             uid,
             msgId: '',
@@ -54,6 +54,7 @@ export async function createPollMessage2(data: any, read: IRead, modify: IModify
             options,
             title: '',
             deadline: '',
+            correctAnswer:[],
             totalVotes: 0,
             votes: options.map(() => ({ quantity: 0, voters: [] })),
             confidential: visibility === 'confidential',
@@ -71,6 +72,7 @@ export async function createPollMessage2(data: any, read: IRead, modify: IModify
         poll.roomId = room;
         poll.title = title;
         poll.deadline = deadline;
+        poll.correctAnswer=correctAnswer;
         const pollAssociation = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, messageId);
         const message = await modify.getUpdater().message(messageId as string, user);
         message.setEditor(message.getSender());
