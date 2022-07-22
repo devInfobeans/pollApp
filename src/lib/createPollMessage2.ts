@@ -7,7 +7,7 @@ import { IPoll } from '../IPoll';
 import { createPollBlocks } from './createPollBlocks';
 
 export async function createPollMessage2(data: any, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
-    const { id, state, record, user, room, identifier } = data;
+    const { id, state, record, user, room, identifier, title, deadline } = data;
 
     if (!state.poll || !state.poll.question || state.poll.question.trim() === '') {
         throw { question: 'Please type your question here' };
@@ -32,7 +32,9 @@ export async function createPollMessage2(data: any, read: IRead, modify: IModify
     }
 
     try {
+     
         const { config = { mode: 'multiple', visibility: 'open' } } = state;
+        
         const { mode = 'multiple', visibility = 'open' } = config;
 
         const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
@@ -48,7 +50,10 @@ export async function createPollMessage2(data: any, read: IRead, modify: IModify
             msgId: '',
             identifier: '',
             roomId: '',
+            t:'poll',
             options,
+            title: '',
+            deadline: '',
             totalVotes: 0,
             votes: options.map(() => ({ quantity: 0, voters: [] })),
             confidential: visibility === 'confidential',
@@ -64,10 +69,12 @@ export async function createPollMessage2(data: any, read: IRead, modify: IModify
         poll.msgId = messageId;
         poll.identifier = identifier;
         poll.roomId = room;
+        poll.title = title;
+        poll.deadline = deadline;
         const pollAssociation = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, messageId);
         const message = await modify.getUpdater().message(messageId as string, user);
         message.setEditor(message.getSender());
-        message.addCustomField("data", poll)
+        message.addCustomField("data", poll);
         modify.getUpdater().finish(message)
         const pollData = await persistence.createWithAssociation(poll, pollAssociation);
     } catch (e) {
