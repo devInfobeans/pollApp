@@ -55,6 +55,7 @@ export async function createPollMessage2(data: any, read: IRead, modify: IModify
             title: '',
             deadline: '',
             totalVotes: 0,
+            participators:[],
             rearrangedVotes:{},
             votes: options.map(() => ({ quantity: 0, voters: [] })),
             confidential: visibility === 'confidential',

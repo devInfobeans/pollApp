@@ -32,13 +32,14 @@ export async function votePoll({ data, read, persistence, modify }: {
         let reArrangedVotes = {};
         reArrangedVotes[userId] = data.order;
         poll.rearrangedVotes = { ...poll.rearrangedVotes, ...reArrangedVotes };
-
+        if (!poll.participators.includes(userId)) { poll.participators.push(userId); }
         await storeVote(poll, parseInt(String(data.value), 10), data.user, { persis: persistence });
         message.setEditor(message.getSender());
         message.addCustomField("data", poll)
         return modify.getUpdater().finish(message);
     }
     else {
+        if (!poll.participators.includes(userId)) { poll.participators.push(userId); }
         await storeVote(poll, parseInt(String(data.value), 10), data.user, { persis: persistence });
 
 

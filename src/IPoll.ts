@@ -170,7 +170,6 @@ export class CastVote extends ApiEndpoint {
             const { values=[], messageId, userId, username, order = [] } = request.content;
           
             if (order.length !== 0) {
-                console.log("inside order rearrangement ");
                 const data = {
                     "appId": "c33fa1a6-68a7-491e-bf49-9d7b99671c48",
                     "actionId": "vote",
@@ -220,6 +219,7 @@ export interface IPoll {
     votes: Array<IVoter>;
     finished?: boolean;
     rearrangedVotes:any;
+    participators:Array<string>;
     confidential?: boolean;
     singleChoice?: boolean;
 }
@@ -238,6 +238,7 @@ export interface IQuiz {
     totalVotes: number;
     votes: Array<IVoter>;
     rearrangedVotes:any;
+    participators:Array<string>;
     finished?: boolean;
     confidential?: boolean;
     singleChoice?: boolean;

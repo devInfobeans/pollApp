@@ -65,6 +65,7 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
             msgId: '',
             options,
             totalVotes: 0,
+            participators:[],
             rearrangedVotes:{},
             votes: options.map(() => ({ quantity: 0, voters: [] })),
             confidential: visibility === 'confidential',
