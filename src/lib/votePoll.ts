@@ -15,6 +15,7 @@ export async function votePoll({ data, read, persistence, modify }: {
             success: true,
         };
     }
+    let userId = data.user.id;
 
     const poll = await getPoll(String(data.message.id), read);
     if (!poll) {
@@ -24,19 +25,33 @@ export async function votePoll({ data, read, persistence, modify }: {
     if (poll.finished) {
         throw new Error('poll is already finished');
     }
-
-    await storeVote(poll, parseInt(String(data.value), 10), data.user, { persis: persistence });
-
     const message = await modify.getUpdater().message(data.message.id as string, data.user);
-    message.setEditor(message.getSender());
-    message.addCustomField("data", poll)
-    const block = modify.getCreator().getBlockBuilder();
 
-    const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
+    if (data.value === '0') {
 
-    createPollBlocks(block, poll.question, poll.options, poll, showNames.value);
+        let reArrangedVotes = {};
+        reArrangedVotes[userId] = data.order;
+        poll.rearrangedVotes = { ...poll.rearrangedVotes, ...reArrangedVotes };
 
-    message.setBlocks(block);
+        await storeVote(poll, parseInt(String(data.value), 10), data.user, { persis: persistence });
+        message.setEditor(message.getSender());
+        message.addCustomField("data", poll)
+        return modify.getUpdater().finish(message);
+    }
+    else {
+        await storeVote(poll, parseInt(String(data.value), 10), data.user, { persis: persistence });
 
-    return modify.getUpdater().finish(message);
+
+        message.setEditor(message.getSender());
+        message.addCustomField("data", poll)
+        const block = modify.getCreator().getBlockBuilder();
+
+        const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
+
+        createPollBlocks(block, poll.question, poll.options, poll, showNames.value);
+
+        message.setBlocks(block);
+
+        return modify.getUpdater().finish(message);
+    }
 }

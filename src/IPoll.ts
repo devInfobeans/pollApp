@@ -29,8 +29,8 @@ export class GeneratePoll extends ApiEndpoint {
         try {
 
 
-            const { question, options, identifier, rooms, title , deadline, mode='multiple', visibility='open'} = request.content;
-          
+            const { question, options, identifier, rooms, title, deadline, mode = 'multiple', visibility = 'open' } = request.content;
+
             var id = uuid.v4();
             const state = {
                 config: { mode, visibility },
@@ -72,8 +72,8 @@ export class GenerateQuiz extends ApiEndpoint {
         try {
 
 
-            const { question, options, identifier, rooms, title , deadline, mode='multiple', visibility='open' , correctAnswer=[]} = request.content;
-          
+            const { question, options, identifier, rooms, title, deadline, mode = 'multiple', visibility = 'open', correctAnswer = [] } = request.content;
+
             var id = uuid.v4();
             const state = {
                 config: { mode, visibility },
@@ -89,7 +89,7 @@ export class GenerateQuiz extends ApiEndpoint {
                 };
                 const userId = 'tJXxzcN4BTadyWgBz';
                 // const userId = 'xM3EoREdLQpThcsc9';
-                const data = { id, state, record, user: { userId, username: 'chatbot', }, room, identifier, title, deadline , correctAnswer}
+                const data = { id, state, record, user: { userId, username: 'chatbot', }, room, identifier, title, deadline, correctAnswer }
 
                 createQuizMessage(data, read, modify, persis, data.user.userId)
             })
@@ -167,9 +167,10 @@ export class CastVote extends ApiEndpoint {
         http: IHttp, persistence: IPersistence): Promise<any> {
 
         try {
-            const { values, messageId, userId, username } = request.content;
-           
-            for(let value of values){
+            const { values=[], messageId, userId, username, order = [] } = request.content;
+          
+            if (order.length !== 0) {
+                console.log("inside order rearrangement ");
                 const data = {
                     "appId": "c33fa1a6-68a7-491e-bf49-9d7b99671c48",
                     "actionId": "vote",
@@ -177,10 +178,25 @@ export class CastVote extends ApiEndpoint {
                         "id": userId,
                         "username": username
                     },
-                    "value": value,
-                    "message": { "id": messageId }
+                    "value": "0",
+                    "message": { "id": messageId },
+                    "order": order
                 }
                 await votePoll({ data, read, persistence, modify });
+            } else {
+                for (let value of values) {
+                    const data = {
+                        "appId": "c33fa1a6-68a7-491e-bf49-9d7b99671c48",
+                        "actionId": "vote",
+                        "user": {
+                            "id": userId,
+                            "username": username
+                        },
+                        "value": value,
+                        "message": { "id": messageId }
+                    }
+                    await votePoll({ data, read, persistence, modify });
+                }
             }
             return this.success({ message: "Vote casted successfully" })
         } catch (error) {
@@ -197,12 +213,13 @@ export interface IPoll {
     question: string;
     roomId: string;
     options: Array<string>;
-    title:string,
-    t:string,
-    deadline:string;
+    title: string,
+    t: string,
+    deadline: string;
     totalVotes: number;
     votes: Array<IVoter>;
     finished?: boolean;
+    rearrangedVotes:any;
     confidential?: boolean;
     singleChoice?: boolean;
 }
@@ -214,12 +231,13 @@ export interface IQuiz {
     question: string;
     roomId: string;
     options: Array<string>;
-    title:string,
-    t:string,
-    deadline:string;
-    correctAnswer:Array<string>;
+    title: string,
+    t: string,
+    deadline: string;
+    correctAnswer: Array<string>;
     totalVotes: number;
     votes: Array<IVoter>;
+    rearrangedVotes:any;
     finished?: boolean;
     confidential?: boolean;
     singleChoice?: boolean;
