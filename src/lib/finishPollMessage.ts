@@ -34,7 +34,7 @@ export async function finishPollMessage({ data, read, persistence, modify }: {
         throw new Error('this poll is already finished');
     }
 
-    if (poll.uid !== data.user.id && data.user.id !== 'r5w7vSqwoPAt66NwH') {
+    if (poll.uid !== data.user.id && data.user.id !== 'mgn2DjDaSeZkFKRhv') {
         throw new Error('You are not allowed to finish the poll'); // send an ephemeral message
     }
 
