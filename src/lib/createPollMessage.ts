@@ -63,6 +63,7 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
             deadline:'',
             uid,
             msgId: '',
+            finished:true,
             options,
             totalVotes: 0,
             participators:[],

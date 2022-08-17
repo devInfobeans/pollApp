@@ -44,9 +44,9 @@ export class GeneratePoll extends ApiEndpoint {
                         id: room,
                     }
                 };
-                const userId = 'tJXxzcN4BTadyWgBz';
-                // const userId = 'xM3EoREdLQpThcsc9';
-                const data = { id, state, record, user: { userId, username: 'chatbot', }, room, identifier, title, deadline }
+                const userId = 'BBg2LwFWbBMqbhxpy';
+                // const userId = 'YxPwijjwM9AH4XMfB';
+                const data = { id, state, record, user: { userId, username: 'poll.bot', }, room, identifier, title, deadline }
 
                 createPollMessage2(data, read, modify, persis, data.user.userId)
             })
@@ -87,9 +87,9 @@ export class GenerateQuiz extends ApiEndpoint {
                         id: room,
                     }
                 };
-                const userId = 'tJXxzcN4BTadyWgBz';
-                // const userId = 'xM3EoREdLQpThcsc9';
-                const data = { id, state, record, user: { userId, username: 'chatbot', }, room, identifier, title, deadline, correctAnswer }
+                const userId = 'BBg2LwFWbBMqbhxpy';
+                // const userId = 'YxPwijjwM9AH4XMfB';
+                const data = { id, state, record, user: { userId, username: 'poll.bot', }, room, identifier, title, deadline, correctAnswer }
 
                 createQuizMessage(data, read, modify, persis, data.user.userId)
             })
