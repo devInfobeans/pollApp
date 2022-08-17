@@ -52,7 +52,7 @@ export async function createPollMessage2(data: any, read: IRead, modify: IModify
             roomId: '',
             t:'poll',
             options,
-            finished:true,
+            finished:false,
             title: '',
             deadline: '',
             totalVotes: 0,
