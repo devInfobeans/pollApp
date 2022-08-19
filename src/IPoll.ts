@@ -6,7 +6,9 @@ import { finishPollMessage } from './lib/finishPollMessage';
 // import { ISlashCommand, SlashCommandContext } from '@rocket.chat/apps-engine/definition/slashcommands';
 import { createPollMessage2 } from '../src/lib/createPollMessage2';
 import { votePoll } from './lib/votePoll';
+import { getPoll } from './lib/getPoll';
 import { createQuizMessage } from './lib/createQuizMessage';
+import { createPollBlocks } from './lib/createPollBlocks';
 // import { PollCommandContext } from './PollCommandContext';
 var uuid = require("uuid");
 
@@ -167,8 +169,8 @@ export class CastVote extends ApiEndpoint {
         http: IHttp, persistence: IPersistence): Promise<any> {
 
         try {
-            const { values=[], messageId, userId, username, order = [] } = request.content;
-          
+            const { values = [], messageId, userId, username, order = [] } = request.content;
+
             if (order.length !== 0) {
                 const data = {
                     "appId": "c33fa1a6-68a7-491e-bf49-9d7b99671c48",
@@ -183,6 +185,13 @@ export class CastVote extends ApiEndpoint {
                 }
                 await votePoll({ data, read, persistence, modify });
             } else {
+                const data2 = {
+                    "user": {
+                        "id": userId,
+                        "username": username
+                    }
+                };
+
                 for (let value of values) {
                     const data = {
                         "appId": "c33fa1a6-68a7-491e-bf49-9d7b99671c48",
@@ -196,6 +205,19 @@ export class CastVote extends ApiEndpoint {
                     }
                     await votePoll({ data, read, persistence, modify });
                 }
+                const poll = await getPoll(String(messageId), read);
+                const message = await modify.getUpdater().message(messageId as string, data2.user as any);
+                message.setEditor(message.getSender());
+                message.addCustomField("data", poll);
+                const block = modify.getCreator().getBlockBuilder();
+
+                const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
+        
+                createPollBlocks(block, poll.question, poll.options, poll, showNames.value);
+        
+                message.setBlocks(block);
+        
+               modify.getUpdater().finish(message);
             }
             return this.success({ message: "Vote casted successfully" })
         } catch (error) {
@@ -218,8 +240,8 @@ export interface IPoll {
     totalVotes: number;
     votes: Array<IVoter>;
     finished?: boolean;
-    rearrangedVotes:any;
-    participators:Array<string>;
+    rearrangedVotes: any;
+    participators: Array<string>;
     confidential?: boolean;
     singleChoice?: boolean;
 }
@@ -237,8 +259,8 @@ export interface IQuiz {
     correctAnswer: Array<string>;
     totalVotes: number;
     votes: Array<IVoter>;
-    rearrangedVotes:any;
-    participators:Array<string>;
+    rearrangedVotes: any;
+    participators: Array<string>;
     finished?: boolean;
     confidential?: boolean;
     singleChoice?: boolean;

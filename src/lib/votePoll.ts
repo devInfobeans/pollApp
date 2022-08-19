@@ -42,17 +42,5 @@ export async function votePoll({ data, read, persistence, modify }: {
         if (!poll.participators.includes(userId)) { poll.participators.push(userId); }
         await storeVote(poll, parseInt(String(data.value), 10), data.user, { persis: persistence });
 
-
-        message.setEditor(message.getSender());
-        message.addCustomField("data", poll)
-        const block = modify.getCreator().getBlockBuilder();
-
-        const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
-
-        createPollBlocks(block, poll.question, poll.options, poll, showNames.value);
-
-        message.setBlocks(block);
-
-        return modify.getUpdater().finish(message);
     }
 }
