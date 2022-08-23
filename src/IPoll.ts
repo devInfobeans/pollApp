@@ -46,8 +46,8 @@ export class GeneratePoll extends ApiEndpoint {
                         id: room,
                     }
                 };
-                // const userId = 'BBg2LwFWbBMqbhxpy';
-                const userId = 'YxPwijjwM9AH4XMfB';
+                const userId = 'BBg2LwFWbBMqbhxpy';
+                // const userId = 'YxPwijjwM9AH4XMfB';
                 const data = { id, state, record, user: { userId, username: 'poll.bot', }, room, identifier, title, deadline }
 
                 createPollMessage2(data, read, modify, persis, data.user.userId)
@@ -89,8 +89,8 @@ export class GenerateQuiz extends ApiEndpoint {
                         id: room,
                     }
                 };
-                // const userId = 'BBg2LwFWbBMqbhxpy';
-                const userId = 'YxPwijjwM9AH4XMfB';
+                const userId = 'BBg2LwFWbBMqbhxpy';
+                // const userId = 'YxPwijjwM9AH4XMfB';
                 const data = { id, state,hintEnabled,hintMessage, record, user: { userId, username: 'poll.bot', }, room, identifier, title, deadline, correctAnswer }
 
                 createQuizMessage(data, read, modify, persis, data.user.userId)
@@ -123,8 +123,8 @@ export class FinishPoll extends ApiEndpoint {
         pollMessageIdArray.forEach(async poll => {
             const data = {
                 message: { id: poll },
-                // user: { id: 'mgn2DjDaSeZkFKRhv' }
-                user: { id: 'r5w7vSqwoPAt66NwH' }
+                user: { id: 'mgn2DjDaSeZkFKRhv' }
+                // user: { id: 'r5w7vSqwoPAt66NwH' }
             }
 
             await finishPollMessage({ data, read, persistence, modify });
@@ -150,8 +150,8 @@ export class FinishQuiz extends ApiEndpoint {
         pollMessageIdArray.forEach(async poll => {
             const data = {
                 message: { id: poll },
-                // user: { id: 'mgn2DjDaSeZkFKRhv' }
-                user: { id: 'r5w7vSqwoPAt66NwH' }
+                user: { id: 'mgn2DjDaSeZkFKRhv' }
+                // user: { id: 'r5w7vSqwoPAt66NwH' }
             }
 
             await finishPollMessage({ data, read, persistence, modify });
