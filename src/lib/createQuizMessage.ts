@@ -7,7 +7,7 @@ import { IQuiz } from '../IPoll';
 import { createPollBlocks } from './createPollBlocks';
 
 export async function createQuizMessage(data: any, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
-    const { id, state, record, user, room, identifier, title, deadline, correctAnswer } = data;
+    const { id, state, record, user, room, identifier, title, deadline, correctAnswer, hintEnabled, hintMessage } = data;
 
     if (!state.poll || !state.poll.question || state.poll.question.trim() === '') {
         throw { question: 'Please type your question here' };
@@ -50,10 +50,12 @@ export async function createQuizMessage(data: any, read: IRead, modify: IModify,
             msgId: '',
             identifier: '',
             roomId: '',
-            t:'poll',
+            t:'quiz',
             options,
             title: '',
             deadline: '',
+            hintMessage:'',
+            hintEnabled:false,
             correctAnswer:[],
             rearrangedVotes:{},
             participators:[],
@@ -73,6 +75,8 @@ export async function createQuizMessage(data: any, read: IRead, modify: IModify,
         poll.identifier = identifier;
         poll.roomId = room;
         poll.title = title;
+        poll.hintEnabled=hintEnabled;
+        poll.hintMessage=hintMessage;
         poll.deadline = deadline;
         poll.correctAnswer=correctAnswer;
         const pollAssociation = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, messageId);

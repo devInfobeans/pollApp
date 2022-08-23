@@ -46,8 +46,8 @@ export class GeneratePoll extends ApiEndpoint {
                         id: room,
                     }
                 };
-                const userId = 'BBg2LwFWbBMqbhxpy';
-                // const userId = 'YxPwijjwM9AH4XMfB';
+                // const userId = 'BBg2LwFWbBMqbhxpy';
+                const userId = 'YxPwijjwM9AH4XMfB';
                 const data = { id, state, record, user: { userId, username: 'poll.bot', }, room, identifier, title, deadline }
 
                 createPollMessage2(data, read, modify, persis, data.user.userId)
@@ -74,7 +74,7 @@ export class GenerateQuiz extends ApiEndpoint {
         try {
 
 
-            const { question, options, identifier, rooms, title, deadline, mode = 'multiple', visibility = 'open', correctAnswer = [] } = request.content;
+            const { question, hintEnabled = false, hintMessage = '', options, identifier, rooms, title, deadline, mode = 'multiple', visibility = 'open', correctAnswer = [] } = request.content;
 
             var id = uuid.v4();
             const state = {
@@ -89,9 +89,9 @@ export class GenerateQuiz extends ApiEndpoint {
                         id: room,
                     }
                 };
-                const userId = 'BBg2LwFWbBMqbhxpy';
-                // const userId = 'YxPwijjwM9AH4XMfB';
-                const data = { id, state, record, user: { userId, username: 'poll.bot', }, room, identifier, title, deadline, correctAnswer }
+                // const userId = 'BBg2LwFWbBMqbhxpy';
+                const userId = 'YxPwijjwM9AH4XMfB';
+                const data = { id, state,hintEnabled,hintMessage, record, user: { userId, username: 'poll.bot', }, room, identifier, title, deadline, correctAnswer }
 
                 createQuizMessage(data, read, modify, persis, data.user.userId)
             })
@@ -123,8 +123,8 @@ export class FinishPoll extends ApiEndpoint {
         pollMessageIdArray.forEach(async poll => {
             const data = {
                 message: { id: poll },
-                user: { id: 'mgn2DjDaSeZkFKRhv' }
-                // user: { id: 'r5w7vSqwoPAt66NwH' }
+                // user: { id: 'mgn2DjDaSeZkFKRhv' }
+                user: { id: 'r5w7vSqwoPAt66NwH' }
             }
 
             await finishPollMessage({ data, read, persistence, modify });
@@ -150,8 +150,8 @@ export class FinishQuiz extends ApiEndpoint {
         pollMessageIdArray.forEach(async poll => {
             const data = {
                 message: { id: poll },
-                user: { id: 'mgn2DjDaSeZkFKRhv' }
-                // user: { id: 'r5w7vSqwoPAt66NwH' }
+                // user: { id: 'mgn2DjDaSeZkFKRhv' }
+                user: { id: 'r5w7vSqwoPAt66NwH' }
             }
 
             await finishPollMessage({ data, read, persistence, modify });
@@ -212,12 +212,12 @@ export class CastVote extends ApiEndpoint {
                 const block = modify.getCreator().getBlockBuilder();
 
                 const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
-        
+
                 createPollBlocks(block, poll.question, poll.options, poll, showNames.value);
-        
+
                 message.setBlocks(block);
-        
-               modify.getUpdater().finish(message);
+
+                modify.getUpdater().finish(message);
             }
             return this.success({ message: "Vote casted successfully" })
         } catch (error) {
@@ -258,6 +258,8 @@ export interface IQuiz {
     deadline: string;
     correctAnswer: Array<string>;
     totalVotes: number;
+    hintEnabled?: boolean;
+    hintMessage?: string;
     votes: Array<IVoter>;
     rearrangedVotes: any;
     participators: Array<string>;
