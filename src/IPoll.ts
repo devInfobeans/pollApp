@@ -91,7 +91,7 @@ export class GenerateQuiz extends ApiEndpoint {
                 };
                 const userId = 'BBg2LwFWbBMqbhxpy';
                 // const userId = 'YxPwijjwM9AH4XMfB';
-                const data = { id, state,hintEnabled,hintMessage, record, user: { userId, username: 'poll.bot', }, room, identifier, title, deadline, correctAnswer }
+                const data = { id, state, hintEnabled, hintMessage, record, user: { userId, username: 'poll.bot', }, room, identifier, title, deadline, correctAnswer }
 
                 createQuizMessage(data, read, modify, persis, data.user.userId)
             })
@@ -259,7 +259,7 @@ export interface IQuiz {
     correctAnswer: Array<string>;
     totalVotes: number;
     hintEnabled?: boolean;
-    hintMessage?: string;
+    hintMessage: string;
     votes: Array<IVoter>;
     rearrangedVotes: any;
     participators: Array<string>;
